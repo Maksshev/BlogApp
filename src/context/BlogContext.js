@@ -10,6 +10,13 @@ const reducer = (state, action) => {
             }];
         case 'DELETE_BLOGPOST':
             return state.filter(blogpost => blogpost.id !== action.payload);
+        case 'EDIT_BLOGPOST':
+            const newState = [...state];
+            const blogPostIndex = newState.findIndex(blogpost => action.payload.id = blogpost.id);
+
+            newState[blogPostIndex] = action.payload;
+
+            return newState;
         default:
             return state;
     }
@@ -37,8 +44,20 @@ const deleteBlogPost = (dispatch) => {
     })
 }
 
+const editBlogPost = (dispatch) => {
+    return (editedBlogPost, callback) => {
+        dispatch({
+            type: 'EDIT_BLOGPOST',
+            payload: editedBlogPost
+        })
+
+        callback();
+    }
+}
+
+//TODO: Remove inital state, make it []
 export const {Context, Provider} = createDataContext(
     reducer,
-    {addBlogPost, deleteBlogPost},
-    []
+    {addBlogPost, deleteBlogPost, editBlogPost},
+    [{id: 'TEST', title: 'TEST', content: 'TEST'}]
 )

@@ -36,7 +36,7 @@ ShowScreen.navigationOptions = (props) => (
                 <TouchableOpacity
                     onPress={
                         () => {
-                            props.navigation.navigate('EditScreen')
+                            props.navigation.navigate('EditScreen', {id: props.navigation.getParam('id')})
                         }
                     }
                     style={innerStyles.editSign}

@@ -1,47 +1,24 @@
 import React, {useState, useContext} from 'react';
-import {View, Text, TextInput, Button, StyleSheet} from 'react-native';
+import {StyleSheet} from 'react-native';
 import {Context as BlogContext} from '../context/BlogContext';
+import BlogPostForm from '../components/BlogPostForm';
 
 const CreateScreen = (props) => {
-    const [title, setTitle] = useState('');
-    const [content, setContent] = useState('');
+
     const {addBlogPost} = useContext(BlogContext);
 
-    const addBlogPostCallback = () => {
+    const navigationCallback = () => {
         props.navigation.navigate('IndexScreen');
     }
 
-    const handleAddBlogPostButton = () => {
-        addBlogPost(title, content, addBlogPostCallback );
+    const onSubmit = (title, content) => {
+        addBlogPost(title, content, navigationCallback);
     }
 
     return (
-        <View>
-            <Text
-                style={styles.label}
-            >
-                Enter title:
-            </Text>
-            <TextInput
-                value={title}
-                onChangeText={(text) => setTitle(text)}
-                style={styles.input}
-            />
-            <Text
-                style={styles.label}
-            >
-                Enter Content:
-            </Text>
-            <TextInput
-                value={content}
-                onChangeText={(text) => setContent(text)}
-                style={styles.input}
-            />
-            <Button
-                title="Add Blog Post"
-                onPress={handleAddBlogPostButton}
-            />
-        </View>
+        <BlogPostForm
+            onSubmit={onSubmit}
+        />
     )
 };
 
