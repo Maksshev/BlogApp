@@ -1,11 +1,15 @@
-import React, {useContext} from 'react';
+import React, {useContext, useEffect} from 'react';
 import {View, Text, FlatList, Button, TouchableOpacity, StyleSheet} from 'react-native';
 import {Context as BlogContext} from "../context/BlogContext";
 import {Feather} from '@expo/vector-icons';
 
 const IndexScreens = (props) => {
 
-    const {state, deleteBlogPost} = useContext(BlogContext);
+    const {state, deleteBlogPost, getBlogPosts} = useContext(BlogContext);
+
+    useEffect(() => {
+        getBlogPosts()
+    }, [])
 
     const openBlogPost = (blogPostId) => {
         props.navigation.navigate('ShowScreen', {id: blogPostId})
