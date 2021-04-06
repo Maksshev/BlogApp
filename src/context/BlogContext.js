@@ -1,11 +1,11 @@
 import createDataContext from './createDataContext';
 import jsonServer from '../api/jsonServer';
 
-const reducer = (state, action) => {
+const reducer = (state = [], action) => {
     switch (action.type) {
         case 'ADD_BLOGPOST':
             return [...state, {
-                id: Math.floor(Math.random() * 99999),
+                id: action.payload.id,
                 title: action.payload.title,
                 content: action.payload.content
             }];
@@ -27,24 +27,43 @@ const reducer = (state, action) => {
 
 
 const addBlogPost = (dispatch) => {
-    return (title, content, callback) => {
-        dispatch({
-            type: 'ADD_BLOGPOST',
-            payload: {
+    return async (title, content, callback) => {
+
+        try {
+            const response = await jsonServer.post('/blogposts', {
                 title,
                 content
-            }
-        })
+            });
 
-        callback();
+            dispatch({
+                type: 'ADD_BLOGPOST',
+                payload: {
+                    title: response.data.title,
+                    content: response.data.content,
+                    id: response.data.id
+                }
+            })
+
+            callback();
+        } catch (e) {
+            //TODO: Add error handling
+            console.log(e);
+        }
     }
 };
 
 const deleteBlogPost = (dispatch) => {
-    return (blogPostId) => dispatch({
-        type: 'DELETE_BLOGPOST',
-        payload: blogPostId
-    })
+    return async (blogPostId) => {
+        try {
+            await jsonServer.delete(`/blogposts/${blogPostId}`);
+            dispatch({
+                type: 'DELETE_BLOGPOST',
+                payload: blogPostId
+            })
+        } catch (e) {
+            console.log(e);
+        }
+    }
 }
 
 const editBlogPost = (dispatch) => {
@@ -73,7 +92,6 @@ const getBlogPosts = (dispatch) => {
     }
 }
 
-//TODO: Remove inital state, make it []
 export const {Context, Provider} = createDataContext(
     reducer,
     {addBlogPost, deleteBlogPost, editBlogPost, getBlogPosts},
